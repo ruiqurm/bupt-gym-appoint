@@ -21,6 +21,7 @@ function generate_blob(ekey,date,time){
 
 async function login(name,vpn_pass,general_pass){
     var cookiejar = rp.jar();
+    vpn_login_success=false;
     await rp({
       method: 'POST',
       uri: 'https://webvpn.bupt.edu.cn/do-login/',
@@ -35,12 +36,23 @@ async function login(name,vpn_pass,general_pass){
       },
       jar:cookiejar
     }).then(parsedBody=>{
-            if (JSON.parse(parsedBody).hasOwnProperty("success")!==true)
-              throw "登录VPN失败"
-            },err=>{
-              console.log(err)
-            });
-
+            let body = JSON.parse(parsedBody);
+            if (body["success"]!==true){
+              vpn_login_success = false
+            }else{
+              vpn_login_success = true
+            }
+      }).catch(err=>{
+        throw err;
+      });
+    if (vpn_login_success===false){
+      await rp({
+        uri: "https://webvpn.bupt.edu.cn/do-confirm-login",
+        method: 'POST',
+      }).catch(err=>{
+        throw err
+      })
+    }
     await rp({
       method: 'POST',
       uri: 'https://webvpn.bupt.edu.cn/https/77726476706e69737468656265737421f7ee4cd225297a1e73078c/login.php',
@@ -119,12 +131,5 @@ login(username,vpn_pass,general_pass).then((jar)=>{
 }).then((res)=>{
   process.env.APPOINT_STATUS = (status===0)?"失败":"成功"
 })
-
-
-
-
-
-
-
 
 
