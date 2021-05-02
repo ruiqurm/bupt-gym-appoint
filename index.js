@@ -136,10 +136,11 @@ console.log("将预约"+next_date+"第"+process.env.APPOINT_HOUR+"时段")
     appoint(jar,username,next_date,time)
   }).catch(err=>{
     console.log(err);
-  }).then((res)=>{
-    status = (status===0)?"失败":"成功"
-    core.exportVariable('APPOINT_STATUS', status);
   })
+  // .then((res)=>{
+  //   status = (status===0)?"失败":"成功"
+  //   core.exportVariable('APPOINT_STATUS', status);
+  // })
 
 
 

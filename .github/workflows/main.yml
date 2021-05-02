@@ -1,11 +1,10 @@
 name: 'gym-appoint'
 
 on:
-  push:
+  # push:
     
   schedule:
-  # 定时任务，在每天的5点推送天气信息到邮箱
-    - cron: '5,10,15 14 * * 2,4,5,0'
+    - cron: '3,8 14 * * 2,4,5,0'
    #预约每周1,3,5,7
 jobs:
   build:
@@ -25,7 +24,7 @@ jobs:
           node index.js 
           echo "{APPOINT_DATE}={$APPOINT_DATE}" >> $GITHUB_ENV
           echo "{APPOINT_HOUR}={$APPOINT_HOUR}" >> $GITHUB_ENV
-          echo "{APPOINT_STATUS}={$APPOINT_STATUS}" >> $GITHUB_ENV
+          # echo "{APPOINT_STATUS}={$APPOINT_STATUS}" >> $GITHUB_ENV
       env:
         BUPT_NAME: ${{secrets.NAME}}
         BUPT_VPN_PASS: ${{secrets.VPN_PASS}}
@@ -50,7 +49,7 @@ jobs:
         password: ${{secrets.MAIL_PASS}}
         
         # Required mail subject:
-        subject: 预约健身房(${{env.APPOINT_DATE}} ${{env.APPOINT_HOUR}})${{env.APPOINT_STATUS}}
+        subject: 预约健身房(${{env.APPOINT_DATE}} ${{env.APPOINT_HOUR}})成功
         to: ${{secrets.MAIL_RECV}}
         from: 群健身房预约助手
-        body: 预约健身房(${{env.APPOINT_DATE}} ${{env.APPOINT_HOUR}})${{env.APPOINT_STATUS}}。在https://gym.byr.moe/my.php 中取消。
+        body: 预约健身房(${{env.APPOINT_DATE}} ${{env.APPOINT_HOUR}})成功。在https://gym.byr.moe/my.php 中取消。
