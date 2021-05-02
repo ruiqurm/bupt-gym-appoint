@@ -2,6 +2,7 @@ const rp = require('request-promise');
 const tough = require('tough-cookie');
 const CryptoJS = require("crypto-js");
 const date = require("silly-datetime");
+const core = require('@actions/core');
 function aes_encrypt(plainText, AES_KEY, AES_IV) {
     var encrypted = CryptoJS.AES.encrypt(plainText, CryptoJS.enc.Utf8.parse(AES_KEY), {
         iv: CryptoJS.enc.Utf8.parse(AES_IV)
@@ -34,7 +35,8 @@ async function login(name,vpn_pass,general_pass){
         "needCaptcha": "false",
         "captcha_id": "1sn58FKoxC3v3Dz"
       },
-      jar:cookiejar
+      jar:cookiejar,
+      timeout:5000
     }).then(parsedBody=>{
             let body = JSON.parse(parsedBody);
             if (body["success"]!==true){
@@ -107,6 +109,7 @@ function appoint(jar,username,date,time){
       status = 0
   })
 }
+
 var status = 0
 username = process.env["BUPT_NAME"]
 if (!username)throw "缺少用户名"
@@ -123,13 +126,16 @@ next_date = date.format(next_date,"YYYYMMDD")
 process.env.APPOINT_DATE = next_date
 process.env.APPOINT_HOUR = (time==="1")?"18:40-19:40":((time==="2")?"19:40-20:40":(time==="3"?"20:40-21:40":"未知"))
 console.log("将预约"+next_date+"第"+process.env.APPOINT_HOUR+"时段")
-
-login(username,vpn_pass,general_pass).then((jar)=>{
-  appoint(jar,username,next_date,time)
-}).catch(err=>{
-  console.log(err);
-}).then((res)=>{
-  process.env.APPOINT_STATUS = (status===0)?"失败":"成功"
-})
+try{
+  login(username,vpn_pass,general_pass).then((jar)=>{
+    appoint(jar,username,next_date,time)
+  }).catch(err=>{
+    console.log(err);
+  }).then((res)=>{
+    process.env.APPOINT_STATUS = (status===0)?"失败":"成功"
+  })
+}catch(error){
+  core.setFailed("failed:"+error)
+}
 
 
