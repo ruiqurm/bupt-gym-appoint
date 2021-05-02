@@ -1,0 +1,52 @@
+name: 'gym-appoint'
+
+on:
+  # push:
+    
+  schedule:
+  # 定时任务，在每天的5点推送天气信息到邮箱
+    - cron: '5,10,15 14 * * 2,4,5,0'
+   #预约每周1,3,5,7
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [15.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm ci
+    - run: node index.js
+      env:
+        BUPT_NAME: ${{secrets.NAME}}
+        BUPT_VPN_PASS: ${{secrets.VPN_PASS}}
+        BUPT_DOOR_PASS: ${{secrets.DOOR_PASS}}
+        BUPT_TIME: ${{secrets.BUPT_TIME}}
+    # - name: Sending message
+    #   uses: yakumioto/serverchan-action@v2
+    #   with:
+    #     key: ${{ secrets.SERVERCHAN_KEY}}
+    #     text: 预约健身房(${{env.APPOINT_DATE}} ${{env.APPOINT_HOUR}})${{env.APPOINT_STATUS}}{消息标题}
+    #     desp: 预约健身房(${{env.APPOINT_DATE}} ${{env.APPOINT_HOUR}})${{env.APPOINT_STATUS}}。在https://gym.byr.moe/my.php 中取消。
+    - name: Send mail
+      uses: dawidd6/action-send-mail@v3
+      with:
+        # smtp服务器，如果不是用腾讯企业邮，请修改
+        server_address: smtp.exmail.qq.com
+        # 端口，可能也需要修改 
+        server_port: 465
+        # Required mail server username:
+        username: ${{secrets.MAIL_SEND}}
+        # Required mail server password:
+        password: ${{secrets.MAIL_PASS}}
+        
+        # Required mail subject:
+        subject: 预约健身房(${{env.APPOINT_DATE}} ${{env.APPOINT_HOUR}})${{env.APPOINT_STATUS}}
+        to: ${{secrets.MAIL_RECV}}
+        from: 群健身房预约助手
+        body: 预约健身房(${{env.APPOINT_DATE}} ${{env.APPOINT_HOUR}})${{env.APPOINT_STATUS}}。在https://gym.byr.moe/my.php 中取消。
