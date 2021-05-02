@@ -127,8 +127,9 @@ var next_date = new Date()
 next_date.setDate(new Date().getDate()+3)//预约最新一天
 next_date = date.format(next_date,"YYYYMMDD")
 
-process.env.APPOINT_DATE = next_date
-process.env.APPOINT_HOUR = (time==="1")?"18:40-19:40":((time==="2")?"19:40-20:40":(time==="3"?"20:40-21:40":"未知"))
+core.exportVariable('APPOINT_DATE', next_date);
+hour = (time==="1")?"18:40-19:40":((time==="2")?"19:40-20:40":(time==="3"?"20:40-21:40":"未知"))
+core.exportVariable('APPOINT_HOUR', hour);
 console.log("将预约"+next_date+"第"+process.env.APPOINT_HOUR+"时段")
 
   login(username,vpn_pass,general_pass).then((jar)=>{
@@ -136,7 +137,8 @@ console.log("将预约"+next_date+"第"+process.env.APPOINT_HOUR+"时段")
   }).catch(err=>{
     console.log(err);
   }).then((res)=>{
-    process.env.APPOINT_STATUS = (status===0)?"失败":"成功"
+    status = (status===0)?"失败":"成功"
+    core.exportVariable('APPOINT_STATUS', status);
   })
 
 
