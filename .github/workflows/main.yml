@@ -23,10 +23,9 @@ jobs:
     - run: npm ci
     - run: |
           node index.js 
-          echo "::set-env name=APPOINT_DATE::$APPOINT_DATE"
-          echo "::set-env name=APPOINT_HOUR::$APPOINT_HOUR"
-          echo "::set-env name=APPOINT_STATUS::$APPOINT_STATUS"
-          
+          echo "{APPOINT_DATE}={$APPOINT_DATE}" >> $GITHUB_ENV
+          echo "{APPOINT_HOUR}={$APPOINT_HOUR}" >> $GITHUB_ENV
+          echo "{APPOINT_STATUS}={$APPOINT_STATUS}" >> $GITHUB_ENV
       env:
         BUPT_NAME: ${{secrets.NAME}}
         BUPT_VPN_PASS: ${{secrets.VPN_PASS}}

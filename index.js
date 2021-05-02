@@ -36,7 +36,7 @@ async function login(name,vpn_pass,general_pass){
         "captcha_id": "1sn58FKoxC3v3Dz"
       },
       jar:cookiejar,
-      timeout:5000
+      timeout:10000
     }).then(parsedBody=>{
             let body = JSON.parse(parsedBody);
             if (body["success"]!==true){
@@ -51,7 +51,7 @@ async function login(name,vpn_pass,general_pass){
       await rp({
         uri: "https://webvpn.bupt.edu.cn/do-confirm-login",
         method: 'POST',
-        timeout:5000
+        timeout:10000
       }).catch(err=>{
         core.setFailed(err)
       })
@@ -63,7 +63,7 @@ async function login(name,vpn_pass,general_pass){
         "username": name,
         "password": general_pass,
       },
-      timeout:5000,
+      timeout:10000,
       jar:cookiejar
     }).then(res=>{
               // console.log("健身房登录失败");
@@ -88,7 +88,7 @@ function appoint(jar,username,date,time){
       form: {
         "blob": generate_blob(ekey =username,date=date,time=time)
       },
-      timeout:5000,
+      timeout:10000,
       jar:jar
     }).then(data=>{
       if(data==="1"){
