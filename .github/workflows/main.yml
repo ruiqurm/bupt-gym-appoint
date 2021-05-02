@@ -21,7 +21,12 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
-    - run: node index.js
+    - run: |
+          node index.js 
+          echo "::set-env name=APPOINT_DATE::$APPOINT_DATE"
+          echo "::set-env name=APPOINT_HOUR::$APPOINT_HOUR"
+          echo "::set-env name=APPOINT_STATUS::$APPOINT_STATUS"
+          
       env:
         BUPT_NAME: ${{secrets.NAME}}
         BUPT_VPN_PASS: ${{secrets.VPN_PASS}}
