@@ -4,7 +4,8 @@ on:
   # push:
     
   schedule:
-    - cron: '3,8 14 * * 2,4,5,0'
+#     - cron: '3,8 14 * * 2,4,5,0'
+    - cron: '${{secrets.CRON}}'
    #预约每周1,3,5,7
 jobs:
   build:
